@@ -55,7 +55,6 @@ class Request {
       });
 
       connection.on("error", (error) => {
-        console.log(error, "---error");
         reject(error);
         connection.end();
       });
@@ -153,7 +152,6 @@ class ResponseParser {
         this.current = this.WAITING_BODY;
       }
     } else if (this.current === this.WAITING_BODY) {
-      // console.log(char, "---char");
       this.bodyParser.receiverChar(char);
     }
   }

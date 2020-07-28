@@ -267,8 +267,6 @@ function afterAttributeName(c) {
 }
 
 module.exports.parseHTML = function parseHTML(html) {
-  console.log(html, "---html");
-
   let state = data;
 
   for (const c of html) {
@@ -276,6 +274,4 @@ module.exports.parseHTML = function parseHTML(html) {
   }
 
   state = state(EOF);
-
-  console.log(stack[0], "---stack[0]");
 };
