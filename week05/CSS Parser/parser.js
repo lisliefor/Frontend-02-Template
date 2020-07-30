@@ -17,7 +17,6 @@ function addCSSRules(text) {
   rules.push(...ast.stylesheet.rules);
 }
 
-/*
 function match(element, selector) {
   if (!selector || !element.attributes) return false;
   const isIDSelector = (sec, element) => {
@@ -47,8 +46,8 @@ function match(element, selector) {
   }
   return false;
 }
-*/
 
+/*
 function match(element, selector) {
   if (!selector || !element.attributes) return false;
   if (selector.charAt(0) === "#") {
@@ -62,6 +61,7 @@ function match(element, selector) {
   }
   return false;
 }
+*/
 
 function computeCSS(element) {
   var elements = stack.slice().reverse();
