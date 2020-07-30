@@ -14,20 +14,20 @@ const server = http.createServer((request, response) => {
       response.writeHead(200, { "Content-Type": "text/html" });
 
       response.end(`
-        <html>
-            <head>
-            <title>Index page</title>
-            <style>
-                body .d1 {
-                color: #ff33ee;
-                font-size: 18px;
-                }
-            </style>
-            </head>
-            <body>
-            <div class="d1">Hello World!</div>
-            </body>
-        </html>
+      <html>
+        <head>
+          <title>Index page</title>
+          <style>
+            body .d1 {
+            color: #ff33ee;
+            font-size: 18px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="d1">Hello World!</div>
+        </body>
+      </html>
       `);
     });
 });
