@@ -19,13 +19,24 @@ const server = http.createServer((request, response) => {
           <title>Index page</title>
           <style>
             body .d1 {
-            color: #ff33ee;
-            font-size: 18px;
+              color: #ff33ee;
+              font-size: 18px;
+            }
+            body #myd1 {
+              color: #ff44ff;
+              font-size: 16px;
+            }
+            body div img {
+              width: 100px;
+              height: 100px;
             }
           </style>
         </head>
         <body>
-          <div class="d1">Hello World!</div>
+          <div class="d1" id="myd1">Hello World!</div>
+          <div>
+            <img />
+          </div>
         </body>
       </html>
       `);

@@ -16,7 +16,7 @@ function addCSSRules(text) {
   // console.log(JSON.parse(ast, null, '    '));
   rules.push(...ast.stylesheet.rules);
 }
-
+/*
 function match(element, selector) {
   if (!selector || !element.attributes) return false;
   const isIDSelector = (sec, element) => {
@@ -46,8 +46,8 @@ function match(element, selector) {
   }
   return false;
 }
+*/
 
-/*
 function match(element, selector) {
   if (!selector || !element.attributes) return false;
   if (selector.charAt(0) === "#") {
@@ -61,7 +61,6 @@ function match(element, selector) {
   }
   return false;
 }
-*/
 
 function computeCSS(element) {
   var elements = stack.slice().reverse();
@@ -78,10 +77,41 @@ function computeCSS(element) {
     if (j >= selectorParts.length) matched = true;
 
     if (matched) {
+      var sp = specificity(rule.selectors[0]);
+      var computedStyle = element.computedStyle;
       // 如何匹配到，我们要加入
-      console.log("Element", element, "matched rule", rule);
+      for (let declaration of rule.declarations) {
+        if (!computedStyle[declaration.property]) computedStyle[declaration.property] = {};
+
+        if (!computedStyle[declaration.property].specificity) {
+          computedStyle[declaration.property].value = declaration.value;
+          computedStyle[declaration.property].specificity = sp;
+        } else if (compare(computedStyle[declaration.property].specificity, sp) < 0) {
+          computedStyle[declaration.property].value = declaration.value;
+          computedStyle[declaration.property].specificity = sp;
+        }
+      }
+      console.log(element.computedStyle);
     }
   }
+}
+
+function specificity(selector) {
+  const p = [0, 0, 0, 0];
+  const selectorParts = selector.split(' ');
+  for (const part of selectorParts) {
+    if (part.charAt(0) === '#' || part.match(/#(\.)+/)) p[1] += 1;
+    else if (part.charAt(0) === '.' || part.match(/\.(\.)+/)) p[2] += 1;
+    else p[3] += 1;
+  }
+  return p;
+}
+
+function compare(sp1, sp2) {
+  if (sp1[0] - sp2[0]) return sp1[0] - sp2[0];
+  if (sp1[1] - sp2[1]) return sp1[1] - sp2[1];
+  if (sp1[2] - sp2[2]) return sp1[2] - sp2[2];
+  return sp1[3] - sp2[3];
 }
 
 function emit(token) {
@@ -355,4 +385,5 @@ module.exports.parseHTML = function parseHTML(html) {
   }
 
   state = state(EOF);
+  return stack[0];
 };
