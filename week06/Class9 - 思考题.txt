@@ -1,0 +1,4 @@
+为什么 first-letter 可以设置 float 之类的，而 first-line 不行呢？
+first-line是在文档在进行排版之后，才能确定的元素，而设置display，或者float属性可能导致当前元素脱离文档流，从而不再属于第一个元素。
+这就和它的定义产生了冲突，会产生类似“先有鸡？还是先有蛋？”的哲学问题。
+因此，first-line不支持一些影响layout的属性。
