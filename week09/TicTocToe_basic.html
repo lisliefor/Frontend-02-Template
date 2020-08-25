@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <style>
+      .cell {
+        width: 100px;
+        height: 100px;
+        background-color: green;
+        display: inline-block;
+        border: 1px solid white;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 80px;
+        font-size: 80px;
+        border-radius: 3px;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="board"></div>
+    <script>
+      let pattern = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+      ];
+      let color = 1;
+
+      function show() {
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            let cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.innerText = pattern[i][j] === 2 ? 'x' : pattern[i][j] === 1 ? 'o' : '';
+            cell.addEventListener('click', (evt) => {
+              evt.preventDefault();
+              move(j, i);
+            });
+            board.appendChild(cell);
+          }
+          board.appendChild(document.createElement('br'));
+        }
+      }
+      // 画棋盘
+      show();
+
+      function move(x, y) {
+        pattern[y][x] = color;
+        if (check(pattern, color)) {
+          console.log(color === 2 ? 'x is winner!' : 'o is winner!');
+        }
+        color = 3 - color;
+        show();
+
+        // 检查是否要赢
+        if (willWin(pattern, color)) {
+          console.log(`${color === 2 ? 'x' : 'o'} will win!`);
+        }
+      }
+
+      function check(pattern, color) {
+        // 横向检查
+        for (let i = 0; i < 3; i++) {
+          let win = true;
+          for (let j = 0; j < 3; j++) {
+            if (pattern[i][j] !==  color) {
+              win = false;
+              break;
+            }
+          }
+          if (win) return true;
+        }
+        // 竖向检查
+        for (let j = 0; j < 3; j++) {
+          let win = true;
+          for (let i = 0; i < 3; i++) {
+            if (pattern[j][i] !== color) {
+              win = false;
+              break;
+            }
+          }
+          if (win) return true;
+        }
+        // 检查/位置，特点i=j (三个点分别为：i=0, j=0; i=1, j=1; i=2, j=2)
+        {
+          let win = true;
+          for (let i = 0; i < 3; i++) {
+            if (pattern[i][i] !== color) {
+              win = false;
+              break;
+            }
+          }
+          if (win) return true;
+        }
+        // 检查\位置，特点i+j=2 (三个点分别为：i=0, j=2; i=1, j=2; i=2, j=0)
+        {
+          let win = true;
+          for (let i = 0; i < 3; i++) {
+            if (pattern[i][2 - i] !== color) {
+              win = false;
+              break;
+            }
+          }
+          if (win) return true;
+        }
+      }
+
+      function clone(pattern) {
+        return JSON.parse(JSON.stringify(pattern));
+      }
+
+      function willWin(pattern, color) {
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (pattern[i][j]) continue;
+            let tmp = clone(pattern);
+            tmp[i][j] = color;
+            if (check(tmp, color)) return true;
+          }
+        }
+        return false;
+      }
+    </script>
+  </body>
+</html>
