@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <style>
+      .traffic-lights {
+        width: auto;
+        position: relative;
+      }
+      .t-light {
+        width: 72px;
+        height: 72px;
+        border-radius: 72px;
+        background-color: #777;
+        display: inline-block;
+        margin-left: 20px;
+      }
+      #red.active {
+        background-color: red;
+      }
+      #orange.active {
+        background-color: orange;
+      }
+      #green.active {
+        background-color: green;
+      }
+      #tips {
+        font-size: 14px;
+        color: #666;
+        line-height: 30px;
+        display: block;
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="traffic-lights">
+      <div class="t-light active" id="green"></div>
+      <div class="t-light" id="orange"></div>
+      <div class="t-light" id="red"></div>
+    </div>
+    <div id="tips"></div>
+    <script lang="javascript">
+      let sec = 0;
+      const trafficeLightThread = setInterval(() => {
+        // 获取当前激活的灯
+        let activeLight = document.getElementsByClassName('active');
+        if (activeLight && activeLight.length > 0) [activeLight] = activeLight;
+        const idStr = activeLight.attributes['id'].value;
+        document.getElementById('tips').innerText = `${idStr === 'green' ? '绿灯' : idStr === 'red' ? '红灯' : '黄灯'} ${sec + 1}秒`;
+
+        sec++;
+        if (sec > 6 && sec < 10 || sec > 10 && sec < 13 || sec > 14 && sec <= 17) {
+          // 绿灯、黄灯、红灯倒数三秒闪烁
+          activeLight.classList.remove('active');
+          setTimeout(() => {
+            activeLight.classList.add('active');
+          }, 200);
+        } else if (sec === 10) {
+          activeLight.classList.remove('active');
+          document.getElementById('orange').classList.add('active');
+        } else if (sec === 13) {
+          activeLight.classList.remove('active');
+          document.getElementById('red').classList.add('active');
+        } else if (sec === 18) {
+          activeLight.classList.remove('active');
+          document.getElementById('green').classList.add('active');
+          sec = 0;
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
