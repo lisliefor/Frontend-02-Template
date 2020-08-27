@@ -9,7 +9,7 @@
         width: 72px;
         height: 72px;
         border-radius: 72px;
-        background-color: #777;
+        background-color: #aaa;
         display: inline-block;
         margin-left: 20px;
       }
@@ -45,7 +45,7 @@
         let activeLight = document.getElementsByClassName('active');
         if (activeLight && activeLight.length > 0) [activeLight] = activeLight;
         const idStr = activeLight.attributes['id'].value;
-        document.getElementById('tips').innerText = `${idStr === 'green' ? '绿灯' : idStr === 'red' ? '红灯' : '黄灯'} ${sec + 1}秒`;
+        document.getElementById('tips').innerText = `第${sec + 1}秒 ${idStr === 'green' ? '绿灯' : idStr === 'red' ? '红灯' : '黄灯'}`;
 
         sec++;
         if (sec > 6 && sec < 10 || sec > 10 && sec < 13 || sec > 14 && sec <= 17) {
