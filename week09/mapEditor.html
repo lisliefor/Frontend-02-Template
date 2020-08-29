@@ -38,8 +38,10 @@
           const cell = document.createElement('div');
           cell.setAttribute('class', 'cell');
           cell.setAttribute('data-index', i);
+          cell.setAttribute('data-x', i % 100);
+          cell.setAttribute('data-y', parseInt(i / 100, 10));
           cell.style.backgroundColor = 'white';
-          if (mapAry[i] === 1) a.style.backgroundColor = '#333';
+          if (mapAry[i] === 1) cell.style.backgroundColor = '#333';
           tnt.append(cell);
 
           if (i !== 0 && i + 1 % 100 === 0) {
