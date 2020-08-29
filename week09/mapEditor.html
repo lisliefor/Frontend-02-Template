@@ -42,9 +42,9 @@
         for (let i = 0; i < mapAry.length; i++) {
           const cell = document.createElement('div');
           cell.setAttribute('class', 'cell');
-          cell.setAttribute('data-index', i);
           cell.setAttribute('data-x', i % 100);
           cell.setAttribute('data-y', parseInt(i / 100, 10));
+          cell.setAttribute('data-index', `${i % 100}-${parseInt(i / 100, 10)}`);
           cell.style.backgroundColor = 'white';
           if (mapAry[i] === 1) cell.style.backgroundColor = '#333';
           tnt.append(cell);
@@ -58,6 +58,7 @@
       let mouseDown = false;
       let isRightKey = false;
       const tnt = document.getElementById('map');
+      // 事件代理
       tnt.addEventListener('mousedown', (e) => {
         mouseDown = true;
         if (e.which === 3) isRightKey = true;
@@ -71,7 +72,9 @@
           const cell = e.target;
           if (cell.className.indexOf('cell') > -1) {
             cell.style.backgroundColor = isRightKey ? 'white' : '#333';
-            mapAry[Number(cell.getAttribute('data-index'))] = isRightKey ? 0 : 1;
+            const x = cell.getAttribute('data-x');
+            const y = cell.getAttribute('data-y');
+            mapAry[y * 100 + x] = isRightKey ? 0 : 1;
           }
         }
       });
