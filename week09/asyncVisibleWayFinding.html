@@ -72,8 +72,8 @@
           const cell = e.target;
           if (cell.className.indexOf('cell') > -1) {
             cell.style.backgroundColor = isRightKey ? 'white' : '#333';
-            const x = cell.getAttribute('data-x');
-            const y = cell.getAttribute('data-y');
+            const x = Number(cell.getAttribute('data-x'));
+            const y = Number(cell.getAttribute('data-y'));
             mapAry[y * 100 + x] = isRightKey ? 0 : 1;
           }
         }
@@ -88,6 +88,10 @@
       });
       document.addEventListener('contextmenu', evt => evt.preventDefault());
       renderMap(mapAry);
+
+      function clone(t) {
+        return JSON.parse(JSON.stringify(t));
+      }
 
       function sleep(t) {
           return new Promise((reslove) => {
@@ -115,6 +119,7 @@
           let [x, y] = queue.shift();
           // console.log(x, y);
           if (x === end[0] && y === end[1]) {
+            document.querySelector(`div[data-index="${x}-${y}"]`).style.backgroundColor = "red";
             return true;
           }
           await insert(x - 1, y);
