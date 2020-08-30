@@ -1,0 +1,178 @@
+<html>
+  <head>
+    <style>
+      #map {
+        width: auto;
+        display: block;
+        min-width: 1020px;
+      }
+      .cell {
+        width: 7px;
+        height: 7px;
+        border-radius: 1px;
+        display: inline-block;
+        vertical-align: top;
+        border: 1px solid #e0e0e0;
+        margin-right: 1px;
+        margin-bottom: 1px;
+      }
+      .toolbar {
+        width: 100%;
+        height: 30px;
+        margin-top: 10px;
+      }
+      .toolbar button {
+          margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="toolbar">
+      <button id="save" type="button">Save</button>
+      <button id="reset" type="button">Reset</button>
+    </div>
+    <script lang="javascript">
+      class Sorted {
+        constructor(data, compare) {
+          this.data = data.slice();
+          this.length = this.data.length;
+          this.compare = compare || ((a, b) => a - b);
+        }
+        take() {
+          if (!this.data.length) return;
+          let min = this.data[0];
+          let minIndex = 0;
+          for (let i = 1; i < this.data.length; i++) {
+            if (this.compare(this.data[i], min) < 0) {
+              min = this.data[i];
+              minIndex = i;
+            }
+          }
+
+          this.data[minIndex] = this.data[this.data.length - 1];
+          this.data.pop();
+          return min;
+        }
+
+        give(v) {
+          this.data.push(v);
+        }
+      }
+
+      let mapAry = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
+      
+      function renderMap(mapAry) {
+        const tnt = document.getElementById('map');
+        tnt.innerHTML = '';
+
+        for (let i = 0; i < mapAry.length; i++) {
+          const cell = document.createElement('div');
+          cell.setAttribute('class', 'cell');
+          cell.setAttribute('data-x', i % 100);
+          cell.setAttribute('data-y', parseInt(i / 100, 10));
+          cell.setAttribute('data-index', `${i % 100}-${parseInt(i / 100, 10)}`);
+          cell.style.backgroundColor = 'white';
+          if (mapAry[i] === 1) cell.style.backgroundColor = '#333';
+          tnt.append(cell);
+
+          if (i > 0 && i % 100 === 99) {
+            tnt.append(document.createElement('br'));
+          }
+        }
+      }
+
+      let mouseDown = false;
+      let isRightKey = false;
+      const tnt = document.getElementById('map');
+      // 事件代理
+      tnt.addEventListener('mousedown', (e) => {
+        mouseDown = true;
+        if (e.which === 3) isRightKey = true;
+      });
+      tnt.addEventListener('mouseup', () => {
+        mouseDown = false;
+        isRightKey = false;
+      });
+      tnt.addEventListener('mousemove', (e) => {
+        if (mouseDown) {
+          const cell = e.target;
+          if (cell.className.indexOf('cell') > -1) {
+            cell.style.backgroundColor = isRightKey ? 'white' : '#333';
+            const x = Number(cell.getAttribute('data-x'));
+            const y = Number(cell.getAttribute('data-y'));
+            mapAry[y * 100 + x] = isRightKey ? 0 : 1;
+          }
+        }
+      });
+      document.getElementById('save').addEventListener('click', () => {
+        localStorage['map'] = JSON.stringify(mapAry);
+      });
+      document.getElementById('reset').addEventListener('click', () => {
+        mapAry = Array(10000).fill(0);
+        localStorage['map'] = JSON.stringify(mapAry);
+        renderMap(mapAry);
+      });
+      document.addEventListener('contextmenu', evt => evt.preventDefault());
+      renderMap(mapAry);
+
+      function clone(t) {
+        return JSON.parse(JSON.stringify(t));
+      }
+
+      function sleep(t) {
+          return new Promise((reslove) => {
+              setTimeout(reslove, t);
+          });
+      }
+
+      async function findPath(map, start, end) {
+        let table = Object.create(map);
+        let queue = new Sorted([start], (a, b) => distance(a) - distance(b));
+
+        async function insert(x, y, pre) {
+          if (x < 0 || x >=100 || y < 0 || y >= 100) return;
+          if (map[y * 100 + x]) return;
+
+          await sleep(5);
+          // 容器中包含br，因此元素位置有变化
+          document.querySelector(`div[data-index="${x}-${y}"]`).style.backgroundColor = "lightGreen";
+          // tnt.children[y * 100 + parseInt(y / 100, 10) + x].style.backgroundColor = "lightGreen";
+          map[y * 100 + x] = pre;
+          queue.give([x, y]);
+        }
+
+        function distance(point) {
+          // x坐标和y坐标的平方
+          return (point[0] - end[0]) ** 2 + (point[1] - end[1]) ** 2;
+        }
+
+        while (queue.length) {
+          let [x, y] = queue.take();
+          // console.log(x, y);
+          if (x === end[0] && y === end[1]) {
+            let path = [];
+            while (x !== start[0] || y !== start[1]) {
+              path.push(map[y * 100 + x]);
+              [x, y] = table[y * 100 + x];
+              document.querySelector(`div[data-index="${x}-${y}"]`).style.backgroundColor = "red";
+            }
+            return path;
+          }
+          await insert(x - 1, y, [x, y]);
+          await insert(x, y - 1, [x, y]);
+          await insert(x + 1, y, [x, y]);
+          await insert(x, y + 1, [x, y]);
+
+          await insert(x - 1, y - 1, [x, y]);
+          await insert(x + 1, y - 1, [x, y]);
+          await insert(x - 1, y + 1, [x, y]);
+          await insert(x + 1, y + 1, [x, y]);
+        }
+        return false;
+      }
+
+      // 启动：path(mayAry, [0, 0], [5, 5]);
+    </script>
+  </body>
+</html>
