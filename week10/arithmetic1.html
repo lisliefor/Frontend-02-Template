@@ -21,6 +21,9 @@
                     token.value = result[0];
                     yield token;
                 }
+                yield {
+                    type: 'EOF'
+                }
             }
 
             for (let token of tokenize('1024 + 10 * 25')) {
