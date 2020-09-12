@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <style>
+      .drag-dom {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+        background-color: pink;
+        cursor: grabbing;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      Thank you. Thank you very much, everyone. Sorry to keep you waiting.
+      Complicated business, complicated. Thank you very much. I've just received
+      a call from Secretary Clinton. She congratulated us. It’s about us. On our
+      victory, and I congratulated her and her family on a very, very
+      hard-fought campaign. I mean she fought very hard. Hillary has worked very
+      long and very hard over a long period of time, and we owe her a major debt
+      of gratitude for her service to our country. I mean that very sincerely.
+      Now it is time for America to bind the wounds of pision, have to get
+      together, to all Republicans and Democrats and independents across this
+      nation I say it is time for us to come together as one united people. It
+      is time. I pledge to every citizen of our land that I will be president
+      for all of Americans, and this is so important to me. For those who have
+      chosen not to support me in the past, of which there were a few people,
+      I'm reaching out to you for your guidance and your help so that we can
+      work together and unify our great country. As I've said from the
+      beginning, ours was not a campaign but rather an incredible and great
+      movement, made up of millions of hard-working men and women who love their
+      country and want a better, brighter future for themselves and for their
+      family. It is a movement comprised of Americans from all races, religions,
+      backgrounds and beliefs, who want and expect our government to serve the
+      people, and serve the people it will. Working together we will begin the
+      urgent task of rebuilding our nation and renewing the American dream. I've
+      spent my entire life in business, looking at the untapped potential in
+      projects and in people all over the world. That is now what I want to do
+      for our country. Tremendous potential. I've gotten to know our country so
+      well. Tremendous potential. It is going to be a beautiful thing. Every
+      single American will have the opportunity to realize his or her fullest
+      potential. The forgotten men and women of our country will be forgotten no
+      longer. We are going to fix our inner cities and rebuild our highways,
+      bridges, tunnels, airports, schools, hospitals. We're going to rebuild our
+      infrastructure, which will become, by the way, second to none, and we will
+      put millions of our people to work as we rebuild it. We will also finally
+      take care of our great veterans who have been so loyal, and I've gotten to
+      know so many over this 18-month journey.
+      <div id="dragDom" class="drag-dom"></div>
+    </div>
+    <script lang="javascript">
+      let dragable = document.getElementById("dragDom");
+        let baseX = 0, baseY =0;
+        dragable.addEventListener("mousedown", (event) => {
+            let startX = event.clientX, startY = event.clientY;
+            let up = (event) => {
+                baseX = baseX + event.clientX - startX;
+                baseY = baseY + event.clientY - startY;
+                console.log('baseX:' + baseX + ' baseY:' + baseY );
+                document.removeEventListener("mousemove", move)
+                document.removeEventListener("mouseup", up)
+
+            }
+
+            let move = event =>{
+                let range = getNearest(event.clientX, event.clientY);
+                range.insertNode(dragable);
+            }
+
+            document.addEventListener('mousemove',move)
+            document.addEventListener('mouseup',up)
+
+        })
+
+        let ranges = [];
+
+        let container = document.getElementById("container");
+        for(let i = 0; i< container.childNodes[0].textContent.length; i++){
+            let range = document.createRange();
+            range.setStart(container.childNodes[0], i);
+            range.setEnd(container.childNodes[0], i);
+
+            console.log(range.getBoundingClientRect());
+            ranges.push(range);
+        }
+        function getNearest(x, y){
+            let min = Infinity;
+            let nearest = null;
+            for(let range of ranges){
+                let rect = range.getBoundingClientRect();
+                let distance = Math.sqrt((rect.x - x) ** 2 + (rect.y - y) ** 2);
+                if(distance < min){
+                    nearest = range;
+                    min = distance;
+                }
+
+            }
+            return nearest;
+        }
+
+        document.addEventListener("selectstart", event => event.preventDefault());
+    </script>
+  </body>
+</html>
