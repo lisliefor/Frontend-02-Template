@@ -17,7 +17,34 @@ class Carousel extends Component {
             this.root.appendChild(child);
         }
 
-        let currentIndex = 0;
+        let position = 0;
+        this.root.addEventListener('mousedown', event => {
+            let children = this.root.children;
+            let startX = event.clientX;
+
+            let move = event => {
+                let x = event.clientX - startX;
+                for (let child of children) {
+                    child.style.transition = 'none';
+                    child.style.transform = `translateX(${- position * 500 + x}px)`;
+                }
+            };
+            let up = event => {
+                let x = event.clientX - startX;
+                position = position - Math.round(x / 500);
+                for (let child of children) {
+                    child.style.transition = '';
+                    child.style.transform = `translateX(${- position * 500}px)`;
+                }
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', up);
+            }
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', up);
+        });
+
+
+        /*let currentIndex = 0;
         setInterval(() => {
             let children = this.root.children;
 
@@ -35,7 +62,7 @@ class Carousel extends Component {
 
                 currentIndex = nextIndex;
             }, 16); // 16ms = 浏览器一帧的时间
-        }, 3000);
+        }, 3000);*/
 
         return this.root;
     }
@@ -45,10 +72,10 @@ class Carousel extends Component {
 }
 
 let d = [
-    './images/1.jpg',
-    './images/2.jpg',
-    './images/3.jpg',
-    './images/4.jpg',
+    './images/1.png',
+    './images/2.png',
+    './images/3.png',
+    './images/4.png',
 ];
 
 let a = <Carousel src={d} />;
