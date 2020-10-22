@@ -5,11 +5,28 @@ module.exports = class extends Generator {
     // Calling the super constructor is important so our generator is correctly set up
     super(args, opts);
   }
-  method1() {
-    this.log('method 1 just ran');
+
+  initPackage() {
+    const pkgJson = {
+      devDependencies: {
+        eslint: '^3.15.0'
+      },
+      dependencies: {
+        react: '^16.2.0'
+      }
+    };
+
+    // Extend or create package.json file in destination path
+    this.fs.extendJSON(this.destinationPath('package.json'), pkgJson);
+    this.yarnInstall(['lodash'], { 'dev': true });
+    this.npmInstall();
   }
 
-  method2() {
-    this.log('method 2 just ran');
+  async method1() {
+    this.fs.copyTpl(
+      this.templatePath('index.html'),
+      this.destinationPath('public/index.html'),
+      { title: 'Templating with Yeoman' }
+    );
   }
 };
