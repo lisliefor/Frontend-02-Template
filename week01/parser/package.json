@@ -1,19 +1,14 @@
 {
-  "name": "publish-tool",
+  "name": "parser",
   "version": "1.0.0",
   "description": "",
-  "main": "publish.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "archiver": "^5.0.2"
-  },
-  "devDependencies": {
-    "eslint": "^7.13.0",
-    "eslint-plugin-react": "^7.21.5"
+    "g2-bracket-parser": "^2.0.0"
   }
 }
